@@ -17,7 +17,6 @@ OTHER_DNS_SERVERS = [
     "tls://1.1.1.1",
     "tls://9.9.9.9",
     "https://dns.cloudflare.com/dns-query",
-    "https://doh.opendns.com/dns-query",
     "https://dns10.quad9.net/dns-query",
 ]
 
