@@ -30,14 +30,14 @@ if not os.path.exists(CONFIG_FILE):
 
 def download_file(author: str, respository: str, branch: str, file_name: str) -> str:
     """Download file from jsdelivr or github"""
-    print(f"Downloading {file_name} from jsdelivr")
     result = ""
     try:
+        print(f"Downloading {file_name} from github")
         url = f"https://raw.githubusercontent.com/{author}/{respository}/{branch}/{file_name}"
         result = get(url).text
     except Exception as e:
         print(f"Error downloading resource file {url}. {e}")
-        print("Try download from github")
+        print(f"Downloading {file_name} from jsdelivr")
         try:
             result = get(url).text
             url = f"https://cdn.jsdelivr.net/gh/{author}/{respository}@{branch}/{file_name}"
