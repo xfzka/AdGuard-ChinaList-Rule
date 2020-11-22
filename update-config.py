@@ -51,7 +51,7 @@ except Exception as e:
 
 # generate AdGuardHome rule file and save
 all_list = china_list_apple + "\n" + china_list
-all_host = "/".join(re.findall(r"server=/(.*)/[^#]", all_list))
+all_host = "/".join(re.findall(r"server=/(.*?)/", all_list))
 all_rule = []
 for dns in CHINA_DNS_SERVERS:
     all_rule.append(f"[/{all_host}/]{dns}\n")
