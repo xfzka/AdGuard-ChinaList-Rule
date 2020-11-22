@@ -6,6 +6,7 @@ import sys, os, re
 RESOURCE_URL = "jsdelivr"  # github
 CONFIG_FILE = "AdGuardHome.yaml"
 DNS_RULE_FILE = "xfzka_upstream_dns_file"
+ENABLE_GOOGLE = True
 CHINA_DNS_SERVERS = [
     "tls://dns.alidns.com",
     "tls://dns.pub",
@@ -40,29 +41,44 @@ if RESOURCE_URL == "github":
     )
 
 
+def download_file(author: str, respository: str, branch: str, file_name: str) -> str:
+    """Download file from jsdelivr or github"""
+    print(f"Downloading {file_name} from jsdelivr")
+    result = ""
+    try:
+        url = f"https://cdn.jsdelivr.net/gh/{author}/{respository}@{branch}/{file_name}"
+        result = get(url).text
+    except Exception as e:
+        print(f"Error downloading resource file {url}. {e}")
+        print("Try download from github")
+        try:
+            url = f"https://raw.githubusercontent.com/{author}/{respository}/{branch}/{file_name}"
+            result = get(url).text
+        except Exception as e:
+            print(f"Error downloading resource file {url}. {e}")
+            print("All fail, please check your internet connection")
+            exit(1)
+    return result
+
+
 # download resource file
-china_list = ""
-china_list_apple = ""
-xfzka_list = []
-print("Downloading")
-try:
-    china_list = get(url).text
-except Exception as e:
-    print(f"Error downloading resource file {url}. {e}")
-    exit(1)
-try:
-    china_list_apple = get(url_apple).text
-except Exception as e:
-    print(f"Error downloading resource file {url}. {e}")
-    exit(1)
-try:
-    xfzka_list = get(url_xfzka).text.splitlines()
-except Exception as e:
-    print(f"Error downloading resource file {url}. {e}")
-    exit(1)
+china_list = download_file(
+    "felixonmars", "dnsmasq-china-list", "master", "accelerated-domains.china.conf"
+)
+china_list_apple = download_file(
+    "felixonmars", "dnsmasq-china-list", "master", "apple.china.conf"
+)
+china_list_google = download_file(
+    "felixonmars", "dnsmasq-china-list", "master", "google.china.conf"
+)
+xfzka_list = download_file(
+    "xfzka", "AdGuard-ChinaList-Rule", "main", "whitelist"
+).splitlines()
 
 # generate AdGuardHome rule file and save
 all_list = china_list_apple + "\n" + china_list
+if ENABLE_GOOGLE:
+    all_list += "\n" + china_list_google
 all_host = "/".join(list(set(re.findall(r"server=/(.*?)/", all_list) + xfzka_list)))
 all_rule = [f"{DNS}\n" for DNS in OTHER_DNS_SERVERS]
 for dns in CHINA_DNS_SERVERS:
