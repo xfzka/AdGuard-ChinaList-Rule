@@ -31,13 +31,19 @@ url = "https://cdn.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/accelerated-do
 url_apple = (
     "https://cdn.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/apple.china.conf"
 )
+url_xfzka = "https://cdn.jsdelivr.net/gh/xfzka/AdGuard-ChinaList-Rule@main/whitelist"
 if RESOURCE_URL == "github":
     url = "https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf"
     url_apple = "https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/apple.china.conf"
+    url_xfzka = (
+        "https://raw.githubusercontent.com/xfzka/AdGuard-ChinaList-Rule/main/whitelist"
+    )
+
 
 # download resource file
 china_list = ""
 china_list_apple = ""
+xfzka_list = []
 print("Downloading")
 try:
     china_list = get(url).text
@@ -49,10 +55,15 @@ try:
 except Exception as e:
     print(f"Error downloading resource file {url}. {e}")
     exit(1)
+try:
+    xfzka_list = get(url_xfzka).text.splitlines()
+except Exception as e:
+    print(f"Error downloading resource file {url}. {e}")
+    exit(1)
 
 # generate AdGuardHome rule file and save
 all_list = china_list_apple + "\n" + china_list
-all_host = "/".join(re.findall(r"server=/(.*?)/", all_list))
+all_host = "/".join(list(set(re.findall(r"server=/(.*?)/", all_list) + xfzka_list)))
 all_rule = [f"{DNS}\n" for DNS in OTHER_DNS_SERVERS]
 for dns in CHINA_DNS_SERVERS:
     all_rule.append(f"[/{all_host}/]{dns}\n")
