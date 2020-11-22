@@ -64,6 +64,6 @@ config["dns"]["upstream_dns_file"] = DNS_RULE_FILE
 config["dns"]["upstream_dns"] = OTHER_DNS_SERVERS
 
 # save configuration file
-open(CONFIG_FILE, "w").write(dump(config, Dumper=Dumper))
+open(CONFIG_FILE, "w").writelines(dump(config, Dumper=Dumper))
 print(f"AdGuardHome configuration updated")
 print(f"Please reload or restart AdGuardHome")
