@@ -65,7 +65,9 @@ xfzka_list = download_file(
 all_list = china_list_apple + "\n" + china_list
 if ENABLE_GOOGLE:
     all_list += "\n" + china_list_google
-all_host = "/".join(list(set(re.findall(r"server=/(.*?)/", all_list) + xfzka_list)))
+all_host = list(set(re.findall(r"server=/(.*?)/", all_list) + xfzka_list))
+all_host = all_host.remove("")
+all_host = "/".join(all_host)
 all_rule = [f"{DNS}\n" for DNS in OTHER_DNS_SERVERS]
 for dns in CHINA_DNS_SERVERS:
     all_rule.append(f"[/{all_host}/]{dns}\n")
