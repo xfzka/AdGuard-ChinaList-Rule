@@ -27,33 +27,20 @@ if not os.path.exists(CONFIG_FILE):
     print("please move this script to AdGuardHome directory")
     exit(1)
 
-# build resource url
-url = "https://cdn.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/accelerated-domains.china.conf"
-url_apple = (
-    "https://cdn.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/apple.china.conf"
-)
-url_xfzka = "https://cdn.jsdelivr.net/gh/xfzka/AdGuard-ChinaList-Rule@main/whitelist"
-if RESOURCE_URL == "github":
-    url = "https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf"
-    url_apple = "https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/apple.china.conf"
-    url_xfzka = (
-        "https://raw.githubusercontent.com/xfzka/AdGuard-ChinaList-Rule/main/whitelist"
-    )
-
 
 def download_file(author: str, respository: str, branch: str, file_name: str) -> str:
     """Download file from jsdelivr or github"""
     print(f"Downloading {file_name} from jsdelivr")
     result = ""
     try:
-        url = f"https://cdn.jsdelivr.net/gh/{author}/{respository}@{branch}/{file_name}"
+        url = f"https://raw.githubusercontent.com/{author}/{respository}/{branch}/{file_name}"
         result = get(url).text
     except Exception as e:
         print(f"Error downloading resource file {url}. {e}")
         print("Try download from github")
         try:
-            url = f"https://raw.githubusercontent.com/{author}/{respository}/{branch}/{file_name}"
             result = get(url).text
+            url = f"https://cdn.jsdelivr.net/gh/{author}/{respository}@{branch}/{file_name}"
         except Exception as e:
             print(f"Error downloading resource file {url}. {e}")
             print("All fail, please check your internet connection")
