@@ -14,10 +14,11 @@ CHINA_DNS_SERVERS = [
     "https://dns.alidns.com/dns-query",
 ]
 OTHER_DNS_SERVERS = [
-    "tls://1.1.1.1",
-    "tls://9.9.9.9",
-    "https://dns.cloudflare.com/dns-query",
-    "https://dns10.quad9.net/dns-query",
+    "tls://1.1.1.1",  # Cloudflare
+    "tls://9.9.9.9",  # IBM
+    "tls://8.8.4.4",  # Google
+    "https://dns.cloudflare.com/dns-query",  # Cloudflare
+    "https://dns10.quad9.net/dns-query",  # IBM
 ]
 
 # file check
